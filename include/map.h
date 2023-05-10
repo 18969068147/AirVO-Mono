@@ -13,7 +13,9 @@
 
 class Map{
 public:
-  Map(OptimizationConfig& backend_optimization_config, CameraPtr camera, RosPublisherPtr ros_publisher);
+
+  Map(OptimizationConfig& backend_optimization_config, CameraPtr camera);  //remove ROS
+  /*ROS   Map(OptimizationConfig& backend_optimization_config, CameraPtr camera, RosPublisherPtr ros_publisher);  */
   void InsertKeyframe(FramePtr frame);
   void InsertMappoint(MappointPtr mappoint);
   void InsertMapline(MaplinePtr mapline);

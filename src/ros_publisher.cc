@@ -3,7 +3,7 @@
 #include <Eigen/Geometry>
 
 #include "utils.h"
-
+/*ROS
 double GetCurrentTime(){
   return ros::Time::now().toSec();
 }
@@ -181,7 +181,7 @@ RosPublisher::RosPublisher(const RosPublisherConfig& ros_publisher_config): _con
     _mapline_publisher.Start();  
   }
 }
-
+*/
 void RosPublisher::PublishFeature(FeatureMessgaePtr feature_message){
   _feature_publisher.Publish(feature_message);
 }

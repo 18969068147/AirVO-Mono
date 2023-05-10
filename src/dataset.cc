@@ -41,8 +41,9 @@ InputDataPtr Dataset::GetData(size_t idx){
   data->index = idx;
   data->image_left = cv::imread(_left_images[idx], 0);
   data->image_right = cv::imread(_right_images[idx], 0);
-  if(_timestamps.empty()){
-    data->time = GetCurrentTime();
+  if(_timestamps.empty()){ //时间辍为空的时候，赋值为当前时间戳；一般情况下时间辍非空，且图片文件的名称是时间戳
+    /*ROS   data->time = GetCurrentTime();  */ //获取时间的函数使用了ROS里面的函数
+    data->time = 123445;
   }else{
     data->time = _timestamps[idx];
   }

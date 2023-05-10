@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.5)
 project(air_vo)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_BUILD_TYPE "release")
+#set(CMAKE_BUILD_TYPE "release")
+set(CMAKE_BUILD_TYPE "debug")
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 add_definitions(-w)
 
@@ -16,7 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   image_transport
   nav_msgs
-  roscpp
+  #roscpp
   rospy
   std_msgs
   sensor_msgs
@@ -34,7 +35,7 @@ find_package(Glog REQUIRED)
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ${PROJECT_NAME}_lib
- CATKIN_DEPENDS geometry_msgs image_transport nav_msgs roscpp rospy std_msgs
+ CATKIN_DEPENDS geometry_msgs image_transport nav_msgs rospy std_msgs #roscpp
 )
 
 include_directories(
@@ -66,7 +67,7 @@ add_library(${PROJECT_NAME}_lib SHARED
   src/mappoint.cc
   src/mapline.cc
   src/line_processor.cc
-  src/ros_publisher.cc
+ # src/ros_publisher.cc
   src/map.cc
   src/map_builder.cc
   src/timer.cc

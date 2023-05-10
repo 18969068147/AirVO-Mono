@@ -16,9 +16,13 @@
 #include "frame.h"
 #include "g2o_optimization/g2o_optimization.h"
 #include "timer.h"
-
+/*ROS
 Map::Map(OptimizationConfig& backend_optimization_config, CameraPtr camera, RosPublisherPtr ros_publisher):
     _backend_optimization_config(backend_optimization_config), _camera(camera), _ros_publisher(ros_publisher){
+}
+ */
+Map::Map(OptimizationConfig& backend_optimization_config, CameraPtr camera):
+        _backend_optimization_config(backend_optimization_config), _camera(camera){
 }
 
 void Map::InsertKeyframe(FramePtr frame){
@@ -759,6 +763,7 @@ void Map::LocalMapOptimization(FramePtr new_frame){
   UpdateFrameConnection(new_frame);
   // PrintConnection();
 
+/*ROS
   // copy back to map
   KeyframeMessagePtr keyframe_message = std::shared_ptr<KeyframeMessage>(new KeyframeMessage);
   MapMessagePtr map_message = std::shared_ptr<MapMessage>(new MapMessage);
@@ -802,7 +807,9 @@ void Map::LocalMapOptimization(FramePtr new_frame){
 
   _ros_publisher->PublisheKeyframe(keyframe_message);
   _ros_publisher->PublishMap(map_message);
-  _ros_publisher->PublishMapLine(mapline_message);  
+  _ros_publisher->PublishMapLine(mapline_message);
+
+  */
 }
 
 std::pair<FramePtr, FramePtr> Map::MakeFramePair(FramePtr frame0, FramePtr frame1){

@@ -30,6 +30,7 @@ Dataset::Dataset(const std::string& dataroot){
 }
 
 size_t Dataset::GetDatasetLength(){
+  
   return _left_images.size();
 }
 

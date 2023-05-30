@@ -20,6 +20,8 @@ public:
   
   void UndistortImage(
       cv::Mat& image_left, cv::Mat& image_right, cv::Mat& image_left_rect, cv::Mat& image_right_rect);
+
+  void MonoUndistortImage(cv::Mat& image_left,  cv::Mat& image_left_rect);
   double ImageHeight();
   double ImageWidth();
   double BF();

@@ -1,0 +1,77 @@
+%YAML:1.0
+
+# sensor_type: "Mono"
+
+image_height: 512
+image_width: 512
+
+# stereo baseline times fx
+bf: 32.3252131124
+
+depth_lower_thr: 0.1
+depth_upper_thr: 10.0
+max_y_diff: 2
+
+# radial-tangential: 0, equidistant/fisheye: 1
+distortion_type: 0
+
+# stereo rectification
+
+# Camera.type: "KannalaBrandt8"
+# D是失真系数[k1,k2,k3,k4]
+# Camera1.k1: 0.003482389402
+# Camera1.k2: 0.000715034845
+# Camera1.k3: -0.002053236141
+# Camera1.k4: 0.000202936736
+
+#K是相机内参，[​fx,0,cx; 0,​fy,cy; 0,0,1]​
+# Camera calibration and distortion parameters (OpenCV) 
+# Camera1.fx: 190.978477
+# Camera1.fy: 190.973307
+# Camera1.cx: 254.931706
+# Camera1.cy: 256.897442
+
+#R是一个3✖3的旋转矩阵，仅对双目相机有效，使左右极线平行
+#P是投影矩阵
+
+LEFT.D: !!opencv-matrix  
+   rows: 1
+   cols: 4
+   dt: d
+   data: [0.003482389402, 0.000715034845, -0.002053236141, 0.000202936736]
+LEFT.K: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [190.978477, 0, 254.931706, 0, 190.973307, 256.897442, 0, 0, 1]
+LEFT.R:  !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [0.9999935662, -0.0033233921, -0.0013500365, 0.0033244884, 0.9999941453, 0.0008106159, 0.0013473346, -0.0008150989, 0.9999987602]
+LEFT.P:  !!opencv-matrix
+   rows: 3
+   cols: 4
+   dt: d
+   data: [190.978477, 0, 254.931706, 0,  0, 190.973307, 256.897442, 0,  0, 0, 1, 0]
+
+RIGHT.D: !!opencv-matrix
+   rows: 1
+   cols: 4
+   dt: d
+   data: [0.003482389402, 0.000715034845, -0.002053236141, 0.000202936736]
+RIGHT.K: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [190.978477, 0, 254.931706, 0, 190.973307, 256.897442, 0, 0, 1]
+RIGHT.R:  !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [0.9999943337, -0.0022228281, 0.0025281572, 0.0022248824, 0.9999971969, -0.0008100474, -0.0025263495, 0.0008156677, 0.9999964761]
+RIGHT.P:  !!opencv-matrix
+   rows: 3
+   cols: 4
+   dt: d
+   data: [644.6438364153, 0, 637.7982711792, 0,  0, 644.6438364153, 355.1050758362, 0,  0, 0, 1, 0]

@@ -36,10 +36,13 @@ public:
   void AddLeftFeatures(Eigen::Matrix<double, 259, Eigen::Dynamic>& features_left, std::vector<Eigen::Vector4d>& lines_left);
   int AddRightFeatures(Eigen::Matrix<double, 259, Eigen::Dynamic>& features_right, std::vector<Eigen::Vector4d>& lines_right, std::vector<cv::DMatch>& stereo_matches);
 
+  void AddLeftPoints(Eigen::Matrix<double, 259, Eigen::Dynamic>& features_left);
+
   Eigen::Matrix<double, 259, Eigen::Dynamic>& GetAllFeatures();
 
   size_t FeatureNum();
 
+  bool GetKeypointPositionMono(size_t idx, Eigen::Vector2d& keypoint_pos);
   bool GetKeypointPosition(size_t idx, Eigen::Vector3d& keypoint_pos);
   std::vector<cv::KeyPoint>& GetAllKeypoints();
   cv::KeyPoint& GetKeypoint(size_t idx);
@@ -60,13 +63,14 @@ public:
   int GetTrackId(size_t idx);
 
   MappointPtr GetMappoint(size_t idx);
+
   std::vector<MappointPtr>& GetAllMappoints();
   void InsertMappoint(size_t idx, MappointPtr mappoint);
 
   bool BackProjectPoint(size_t idx, Eigen::Vector3d& p3D);
   CameraPtr GetCamera();
   void FindNeighborKeypoints(Eigen::Vector3d& p2D, std::vector<int>& indices, double r, bool filter = true) const;
-
+  
   
   // line features
   size_t LineNum();
@@ -106,6 +110,10 @@ public:
   void SetPreviousFrame(const std::shared_ptr<Frame> previous_frame);
   std::shared_ptr<Frame> PreviousFrame();
   
+  cv::Mat GetCameraCenter();
+  cv::Mat GetCameraInterParam();
+  void UndistortKeyPoints();
+
 public:
   int tracking_frame_id;
   int local_map_optimization_frame_id;

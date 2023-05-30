@@ -1,4 +1,6 @@
 #include "mappoint.h"
+#include <iostream>
+#include <opencv2/core/eigen.hpp>
 
 Mappoint::Mappoint(): tracking_frame_id(-1), last_frame_seen(-1), local_map_optimization_frame_id(-1),
      _type(Type::UnTriangulated){
@@ -20,6 +22,7 @@ Mappoint::Mappoint(int& mappoint_id, Eigen::Vector3d& p, Eigen::Matrix<double, 2
 }
 
 void Mappoint::SetId(int id){
+  //std::cout << "Mappoint::SetId" << id <<std::endl;
   _id = id;
 }
 
@@ -100,3 +103,33 @@ int Mappoint::GetKeypointIdx(int frame_id){
   if(_obversers.count(frame_id) > 0) return _obversers[frame_id];
   return -1;
 }
+
+// void Mappoint::UpdateNormalAndDepth(){
+   
+//     cv::Mat Pos;
+//     cv::eigen2cv(_position, Pos);
+
+//     if(_obversers.empty())
+//         return;
+
+//     cv::Mat normal = cv::Mat::zeros(3,1,CV_32F);
+//     int n=0;
+//     for(size_t i=0; i<kfs.size(); i++){
+//         cv::Mat Owi = kfs[i]->GetCameraCenter();  //camera center(cx,cy,0)
+//         cv::Mat normali = mWorldPos - Owi;
+//         normal = normal + normali/cv::norm(normali);
+//         n++;
+//     }
+//     FramePtr pRefKF = kfs[0];
+
+//     // cv::Mat PC = Pos - pRefKF->GetCameraCenter();
+//     // const float dist = cv::norm(PC);
+//     // const int level = pRefKF->mvKeysUn[observations[pRefKF]].octave;
+//     // const float levelScaleFactor =  pRefKF->mvScaleFactors[level];
+//     // const int nLevels = pRefKF->mnScaleLevels;
+  
+//     // mfMaxDistance = dist*levelScaleFactor;
+//     // mfMinDistance = mfMaxDistance/pRefKF->mvScaleFactors[nLevels-1];
+//     mNormalVector = normal/n; // 获得地图点平均的观测方向
+  
+// }

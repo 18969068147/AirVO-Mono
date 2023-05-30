@@ -1,10 +1,11 @@
 <launch>
     <arg name="config_path" default = "$(find air_vo)/configs/configs_oivio.yaml" />
-    <arg name="dataroot" default = "/data/xukuan/OIVIO/selected_seq/MN_015_GV_01" />
+    <arg name="dataroot" default = "/data/xukuan/oivio/MN_015_GV_01/husky0" />
     <arg name="camera_config_path" default = "$(find air_vo)/configs/oivio.yaml" />
     <arg name="model_dir" default = "$(find air_vo)/output" />
     <arg name="saving_dir" default = "$(find air_vo)/debug" />
     <arg name="traj_path" default = "$(find air_vo)/debug/traj.txt" />
+    <arg name="sensor_type" default = "MONO" />
 
     <node name="air_vo" pkg="air_vo" type="air_vo" output="screen">
       <param name="config_path" type="string" value="$(arg config_path)" />

@@ -50,6 +50,7 @@ include_directories(
   ${G2O_INCLUDE_DIR}
   ${GFLAGS_INCLUDE_DIRS} 
   ${GLOG_INCLUDE_DIRS}
+
 )
 
 add_library(${PROJECT_NAME}_lib SHARED
@@ -71,6 +72,7 @@ add_library(${PROJECT_NAME}_lib SHARED
   src/map.cc
   src/map_builder.cc
   src/timer.cc
+  src/initializer.cc
 )
 
 target_link_libraries(${PROJECT_NAME}_lib
@@ -82,9 +84,11 @@ target_link_libraries(${PROJECT_NAME}_lib
   ${G2O_LIBRARIES}
   ${GFLAGS_LIBRARIES} 
   ${GLOG_LIBRARIES}
+  ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
   yaml-cpp
   TensorRTBuffer
 )
+
 
 add_executable(${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_lib ${catkin_LIBRARIES})

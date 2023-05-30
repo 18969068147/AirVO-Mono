@@ -90,6 +90,11 @@ void Camera::UndistortImage(
   cv::remap(image_right, image_right_rect, _mapr1, _mapr2, cv::INTER_LINEAR);
 }
 
+void Camera::MonoUndistortImage(
+        cv::Mat& image_left,  cv::Mat& image_left_rect){
+    cv::remap(image_left, image_left_rect, _mapl1, _mapl2, cv::INTER_LINEAR);
+}
+
 double Camera::ImageHeight(){
   return _image_height;
 }

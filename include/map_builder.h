@@ -17,6 +17,7 @@
 #include "map.h"
 #include "ros_publisher.h"
 #include "g2o_optimization/types.h"
+#include "initializer.h"
 
 struct TrackingData{
   FramePtr frame;
@@ -45,8 +46,17 @@ public:
   void ExtractFeatrue(const cv::Mat& image, Eigen::Matrix<double, 259, Eigen::Dynamic>& points, std::vector<Eigen::Vector4d>& lines);
   void ExtractFeatureAndMatch(const cv::Mat& image, const Eigen::Matrix<double, 259, Eigen::Dynamic>& points0, 
       Eigen::Matrix<double, 259, Eigen::Dynamic>& points1, std::vector<Eigen::Vector4d>& lines, std::vector<cv::DMatch>& matches);
-  bool Init(FramePtr frame, cv::Mat& image_left, cv::Mat& image_right);
+
+  void FeatureMatch(const Eigen::Matrix<double, 259, Eigen::Dynamic> &points0,Eigen::Matrix<double, 259, Eigen::Dynamic> &points1,
+                                        std::vector<cv::DMatch> &matches);    
+  bool InitStereo(FramePtr frame, cv::Mat& image_left, cv::Mat& image_right);
   int TrackFrame(FramePtr frame0, FramePtr frame1, std::vector<cv::DMatch>& matches);
+
+  // void ExtractPoints(const cv::Mat &image, Eigen::Matrix<double, 259, Eigen::Dynamic> &points);
+  void Pose_estimation_2d2d(std::vector<cv::KeyPoint> keypoints_1,std::vector<cv::KeyPoint> keypoints_2,std::vector<cv::DMatch> matches,cv::Mat &R, cv::Mat &t);
+  bool InitMonocular(FramePtr curframe, cv::Mat &image_left);
+  void CreateInitialMapMonocular(FramePtr initialFrame, FramePtr frame, std::vector<cv::Point3d> mvIniP3D, std::vector<cv::DMatch> matches);
+
 
   // pose_init = 0 : opencv pnp, pose_init = 1 : last frame pose, pose_init = 2 : original pose
   int FramePoseOptimization(FramePtr frame, std::vector<MappointPtr>& mappoints, std::vector<int>& inliers, int pose_init = 0);
@@ -63,11 +73,28 @@ public:
 
   void PublishFrame(FramePtr frame, cv::Mat& image);
 
+
+  //monocular initialization
+  float ComputeSceneMedianDepth(FramePtr initialFrame, const int q);
+
   void SaveTrajectory();
   void SaveTrajectory(std::string file_path);
   void SaveMap(const std::string& map_root);
 
   void ShutDown();
+
+  // Initialization Variables (Monocular)
+  // Initalization (only for monocular)
+  Initializer* mpInitializer;
+  FramePtr mInitialFrame;
+  std::vector<int> mvIniLastMatches;
+  std::vector<cv::Point2f> mvbPrevMatched;
+  std::vector<int> mvIniMatches;
+  std::vector<cv::Point3f> mvIniP3D;
+
+  // Calibration
+  cv::Mat mK;
+
 
 private:
   // left feature extraction and tracking thread

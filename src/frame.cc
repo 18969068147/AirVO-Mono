@@ -84,6 +84,35 @@ void Frame::AddFeatures(Eigen::Matrix<double, 259, Eigen::Dynamic>& features_lef
   AddRightFeatures(features_right, lines_right, stereo_matches);
 }
 
+void Frame::AddLeftPoints(Eigen::Matrix<double, 259, Eigen::Dynamic>& features_left){
+    _features = features_left;
+
+    // fill in keypoints and assign features to grids
+    size_t features_left_size = _features.cols();
+    for(size_t i = 0; i < features_left_size; ++i){
+        double score = _features(0, i);
+        double x = _features(1, i);
+        double y = _features(2, i);
+        _keypoints.emplace_back(x, y, 8, -1, score);
+
+        int grid_x, grid_y;
+        bool found = FindGrid(x, y, grid_x, grid_y);
+        assert(found);
+        _feature_grid[grid_x][grid_y].push_back(i);
+    }
+
+    // initialize u_right and depth
+    _u_right = std::vector<double>(features_left_size, -1);
+    _depth = std::vector<double>(features_left_size, -1);
+
+    // initialize track_ids and mappoints
+    std::vector<int> track_ids(features_left_size, -1);
+    SetTrackIds(track_ids);
+    std::vector<MappointPtr> mappoints(features_left_size, nullptr);
+    _mappoints = mappoints;
+}
+
+
 void Frame::AddLeftFeatures(Eigen::Matrix<double, 259, Eigen::Dynamic>& features_left, 
     std::vector<Eigen::Vector4d>& lines_left){
   _features = features_left;
@@ -191,6 +220,13 @@ Eigen::Matrix<double, 259, Eigen::Dynamic>& Frame::GetAllFeatures(){
 
 size_t Frame::FeatureNum(){
   return _features.cols();
+}
+
+bool Frame::GetKeypointPositionMono(size_t idx, Eigen::Vector2d& keypoint_pos){
+  if(idx > _features.cols()) return false;
+  keypoint_pos.head(2) = _features.block<2, 1>(1, idx);
+  // keypoint_pos(2) = _u_right[idx];
+  return true;
 }
 
 bool Frame::GetKeypointPosition(size_t idx, Eigen::Vector3d& keypoint_pos){
@@ -500,4 +536,71 @@ void Frame::SetPreviousFrame(std::shared_ptr<Frame> previous_frame){
 
 std::shared_ptr<Frame> Frame::PreviousFrame(){
   return _previous_frame;
+}
+
+cv::Mat Frame::GetCameraCenter(){
+  cv::Mat Tcw;
+  cv::eigen2cv(_pose, Tcw);
+  cv::Mat Rcw = Tcw.rowRange(0,3).colRange(0,3);
+  cv::Mat tcw = Tcw.rowRange(0,3).col(3);
+  cv::Mat Rwc = Rcw.t();
+  cv::Mat Ow = -Rwc*tcw;
+  return Ow;
+}
+
+cv::Mat Frame::GetCameraInterParam(){
+  float fx = _camera->Fx();
+  float fy = _camera->Fy();
+  float cx = _camera->Cx();
+  float cy = _camera->Cy();
+
+  cv::Mat K = cv::Mat::eye(3, 3, CV_32F);
+  K.at<float>(0, 0) = fx;
+  K.at<float>(1, 1) = fy;
+  K.at<float>(0, 2) = cx;
+  K.at<float>(1, 2) = cy;
+  return K;
+}
+
+//tum-vi 
+void Frame::UndistortKeyPoints(){
+    // if(mDistCoef.at<float>(0)==0.0){
+    //     mvKeysUn=mvKeys;
+    //     return;
+    // }
+
+    // Fill matrix with points
+    int N = _keypoints.size();
+    cv::Mat mat(N,2,CV_32F);
+    for(int i=0; i<N; i++){
+        mat.at<float>(i,0)=_keypoints[i].pt.x;
+        mat.at<float>(i,1)=_keypoints[i].pt.y; 
+    }
+
+    cv::Mat mDistCoef,K,mk;
+
+    // _camera->GetTumviCamerMatrix()
+    // _camera->GetTumviDistCoeffs(mDistCoef);
+    K =(cv::Mat_<double>(3,3) << 190.978477, 0, 254.931706, 0, 190.973307, 256.897442, 0, 0, 1);
+    mDistCoef = (cv::Mat_<double>(4, 1) << 0.003482389402, 0.000715034845, -0.002053236141, 0.000202936736);
+    // Undistort points
+    mat=mat.reshape(2);
+
+
+    cv::fisheye::undistortPoints(mat,mat,K,mDistCoef);
+    mat=mat.reshape(1);
+
+
+    // Fill undistorted keypoint vector
+    std::vector<cv::KeyPoint> mvKeysUn;
+    mvKeysUn.resize(N);
+    for(int i=0; i<N; i++){
+        cv::KeyPoint kp = _keypoints[i];
+        kp.pt.x=mat.at<float>(i,0);
+        kp.pt.y=mat.at<float>(i,1);
+        mvKeysUn[i]=kp;
+    }
+    _keypoints = mvKeysUn;
+    
+    return;
 }

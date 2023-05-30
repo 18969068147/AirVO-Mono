@@ -1,5 +1,7 @@
 %YAML:1.0
 
+sensor_type: "Stereo"
+
 image_height: 720
 image_width: 1280
 

@@ -16,6 +16,7 @@ public:
 
   Map(OptimizationConfig& backend_optimization_config, CameraPtr camera);  //remove ROS
   /*ROS   Map(OptimizationConfig& backend_optimization_config, CameraPtr camera, RosPublisherPtr ros_publisher);  */
+  void InsertInitKeyframe(FramePtr initialFrame, FramePtr curFrame);
   void InsertKeyframe(FramePtr frame);
   void InsertMappoint(MappointPtr mappoint);
   void InsertMapline(MaplinePtr mapline);
@@ -24,6 +25,10 @@ public:
 
   FramePtr GetFramePtr(int frame_id);
   MappointPtr GetMappointPtr(int mappoint_id);
+  std::vector<int> GetAllFrameIDs();
+  std::map<int, FramePtr> GetAllFramePtr();
+
+
   MaplinePtr GetMaplinePtr(int mapline_id);
 
   bool TriangulateMappoint(MappointPtr mappoint);

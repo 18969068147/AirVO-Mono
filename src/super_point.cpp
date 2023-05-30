@@ -13,7 +13,7 @@ using namespace tensorrt_buffer;
 SuperPoint::SuperPoint(const SuperPointConfig &super_point_config)
         : super_point_config_(super_point_config), engine_(
         nullptr) {
-    setReportableSeverity(Logger::Severity::kINTERNAL_ERROR);
+    setReportableSeverity(Logger::Severity::kINFO);
 }
 
 bool SuperPoint::build() {
